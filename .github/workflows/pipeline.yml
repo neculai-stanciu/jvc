@@ -19,7 +19,7 @@ jobs:
     - name: Run tests
       run: cargo test
       
-build_release:
+  build_release:
     runs-on: windows-latest
     name: "Release jvc for Windows"
     steps:

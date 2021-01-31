@@ -24,5 +24,4 @@ jobs:
         with:
           token: ${{ secrets.REPO_ACCESS_TOKEN }}
           event-type: tag-created
-          
           client-payload: '{"new_version": "${{ steps.tag_version.outputs.new_tag }}"}'

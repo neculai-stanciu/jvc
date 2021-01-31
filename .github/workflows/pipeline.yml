@@ -22,14 +22,17 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
         include:
-          -os: ubuntu-latest
+        - os: ubuntu-latest
           artifact_name: jvc
           asset_name: jvc-linux-amd64
-          -os: macOS-latest
+          
+        - os: macos-latest
           artifact_name: jvc
           asset_name: jvc-macos-amd64
-          -os: windows-latest
+          
+        - os: windows-latest
           artifact_name: jvc.exe
           asset_name: jvc-win-amd64.exe
     steps:

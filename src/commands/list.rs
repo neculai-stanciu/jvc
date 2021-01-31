@@ -48,7 +48,7 @@ impl Executor for List {
                 .map(|v| Version::new_from_disk(&*v))
                 .collect()
         };
-
+        debug!("Prepare list from versions: {:?}", versions);
         let alias_versions = list_aliases_versions(config.aliases_dir())?;
 
         println!("###############################################################");

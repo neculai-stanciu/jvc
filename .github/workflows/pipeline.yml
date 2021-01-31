@@ -32,19 +32,19 @@ jobs:
       run: cargo build --release
 
     - name: Bump version and push tag/create release point
-        uses: anothrNick/github-tag-action@1.34.0
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          WITH_V: true
-        id: bump_version
+      uses: anothrNick/github-tag-action@1.34.0
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        WITH_V: true
+      id: bump_version
     - name: Upload binary to release
-        uses: svenstaro/upload-release-action@v1-release
-        with:
-          repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: target/release/jvc
-          asset_name: jvc-linux-amd64
-          tag: ${{ steps.bump_version.outputs.new_tag }}
-          overwrite: true
+      uses: svenstaro/upload-release-action@v1-release
+      with:
+        repo_token: ${{ secrets.GITHUB_TOKEN }}
+        file: target/release/jvc
+        asset_name: jvc-linux-amd64
+        tag: ${{ steps.bump_version.outputs.new_tag }}
+        overwrite: true
 
   build_macos_release:
     runs-on: macOS-latest
@@ -65,19 +65,19 @@ jobs:
       run: otool -L target/release/jvc
 
     - name: Bump version and push tag/create release point
-        uses: anothrNick/github-tag-action@1.34.0
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          WITH_V: true
-        id: bump_version
+      uses: anothrNick/github-tag-action@1.34.0
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        WITH_V: true
+      id: bump_version
     - name: Upload binary to release
-        uses: svenstaro/upload-release-action@v1-release
-        with:
-          repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: target/release/jvc
-          asset_name: jvc-linux-amd64
-          tag: ${{ steps.bump_version.outputs.new_tag }}
-          overwrite: true
+      uses: svenstaro/upload-release-action@v1-release
+      with:
+        repo_token: ${{ secrets.GITHUB_TOKEN }}
+        file: target/release/jvc
+        asset_name: jvc-linux-amd64
+        tag: ${{ steps.bump_version.outputs.new_tag }}
+        overwrite: true
 
   build_linux_binary:
     name: "Release jvc for Linux"
@@ -89,16 +89,16 @@ jobs:
       run: cargo build --release
 
     - name: Bump version and push tag/create release point
-        uses: anothrNick/github-tag-action@1.34.0
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          WITH_V: true
-        id: bump_version
+      uses: anothrNick/github-tag-action@1.34.0
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        WITH_V: true
+      id: bump_version
     - name: Upload binary to release
-        uses: svenstaro/upload-release-action@v1-release
-        with:
-          repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: target/release/jvc
-          asset_name: jvc-linux-amd64
-          tag: ${{ steps.bump_version.outputs.new_tag }}
-          overwrite: true
+      uses: svenstaro/upload-release-action@v1-release
+      with:
+        repo_token: ${{ secrets.GITHUB_TOKEN }}
+        file: target/release/jvc
+        asset_name: jvc-linux-amd64
+        tag: ${{ steps.bump_version.outputs.new_tag }}
+        overwrite: true

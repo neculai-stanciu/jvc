@@ -1,3 +1,2 @@
-# jvc - Java versions controller
-
+# jvc
 A tool to handle java versions.

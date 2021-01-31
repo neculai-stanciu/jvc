@@ -1,8 +1,7 @@
 use super::{alias::Alias, executor::Executor};
 use anyhow::Result;
 use async_trait::async_trait;
-use colored::Colorize;
-use log::{debug, info};
+use log::debug;
 use structopt::StructOpt;
 #[derive(Debug, StructOpt)]
 pub struct Default {
@@ -13,7 +12,7 @@ pub struct Default {
 impl Executor for Default {
     async fn execute(self, config: crate::config::JvcConfig) -> Result<()> {
         debug!("Creating default version for: {}", self.to_version);
-        let provider = config.java_provider.as_str();
+
         Alias {
             name: "default".into(),
             to_version: self.to_version.clone(),
@@ -21,11 +20,6 @@ impl Executor for Default {
         .execute(config)
         .await?;
 
-        info!(
-            "Selected version {} is now default with provider {}",
-            self.to_version.blue(),
-            provider.blue()
-        );
         Ok(())
     }
 }

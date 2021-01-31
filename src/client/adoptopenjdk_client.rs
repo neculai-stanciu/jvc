@@ -224,8 +224,25 @@ fn compose_download_url(
     api_base_url: String,
     version: &Version,
 ) -> Url {
+    let os = if cfg!(target_os = "windows") {
+        "windows"
+    } else if cfg!(target_os = "mac") {
+        "mac"
+    } else {
+        "linux"
+    };
+
     Url::parse(&format!(
         "{}/assets/feature_releases/{}/{}?architecture={}&heap_size={}&image_type={}&jvm_impl={}&os={}&page=0&page_size=1&project={}&sort_method=DEFAULT&sort_order=DESC&vendor={}",
-        api_base_url, version, requirements.release_type.unwrap(), requirements.arch.unwrap(), requirements.heap_size.unwrap(), requirements.image_type.unwrap(), requirements.jvm_impl.unwrap(), requirements.os.unwrap(), requirements.project.unwrap(), requirements.vendor.unwrap()
+        api_base_url,
+        version,
+        requirements.release_type.unwrap_or("ga".to_owned()),
+        requirements.arch.unwrap_or("x64".to_owned()),
+        requirements.heap_size.unwrap_or("normal".to_owned()),
+        requirements.image_type.unwrap_or("jdk".to_owned()),
+        requirements.jvm_impl.unwrap_or("hotspot".to_owned()),
+        requirements.os.unwrap_or(os.to_owned()),
+        requirements.project.unwrap_or("jdk".to_owned()),
+        requirements.vendor.unwrap_or("adoptopenjdk".to_owned()),
         )).expect("Cannot create download url!")
 }

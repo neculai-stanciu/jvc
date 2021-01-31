@@ -1,6 +1,6 @@
-use std::fs::rename;
+use std::fs::{read_link, rename};
 
-use crate::config::JvcConfig;
+use crate::{config::JvcConfig, version::Version};
 
 use super::{
     executor::Executor,
@@ -8,7 +8,8 @@ use super::{
 };
 use anyhow::{anyhow, Result};
 use async_trait::async_trait;
-use log::warn;
+use colored::Colorize;
+use log::{debug, info, warn};
 use structopt::StructOpt;
 use symlink::{remove_symlink_dir, symlink_dir};
 
@@ -44,16 +45,42 @@ fn apply_alias(config: &JvcConfig, name: &str, applicable_version: VersionPath) 
     let aliases_dir = config.aliases_dir();
     let version_dir = applicable_version.path();
     let alias_dir = aliases_dir.join(name);
+    let version_name = applicable_version
+        .path()
+        .file_name()
+        .ok_or(anyhow!("Cannot get file name!"))?
+        .to_str()
+        .ok_or(anyhow!("Cannot convert to utf8 string"))?;
 
-    if alias_dir.exists() {
+    let version = Version::new_from_disk(version_name);
+
+    let symlink_exists = read_link(alias_dir.as_path()).ok();
+    debug!(
+        "Aliases dir: {:?} - exists {}",
+        alias_dir.as_path(),
+        symlink_exists.is_some()
+    );
+
+    if symlink_exists.is_some() {
+        debug!("Try to remove: {:?}", alias_dir.as_path());
+
         remove_symlink_dir(&alias_dir)?;
     }
     symlink_dir(version_dir, alias_dir.as_path())?;
+
+    info!(
+        "Created alias {} for version {} and provider {}",
+        name.green(),
+        version.value.green(),
+        version.provider.as_str().green()
+    );
 
     Ok(())
 }
 
 fn override_alias(name: &str, to_version: &str, config: &JvcConfig) -> Result<()> {
+    debug!("Try to override alias {} to version {}", name, to_version);
+
     let aliases_dir = config.aliases_dir();
     let actual_alias_dir = aliases_dir.join(to_version);
     let required_alias_dir = aliases_dir.join(name);

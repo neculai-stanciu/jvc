@@ -14,7 +14,7 @@ pub struct JvcConfig {
     #[structopt(long = "jvc-dir", env = "JVC_DIR", global = true)]
     pub base_dir: Option<PathBuf>,
 
-    /// Provider used to obtain java version. Possible options: adoptopenjdk.
+    /// Provider used to obtain java version. Possible options: adoptopenjdk or azul.
     #[structopt(
         long = "provider",
         short = "p",
@@ -27,7 +27,7 @@ pub struct JvcConfig {
     /// The log level for jvc. Possible options: debug, info, error, silent
     #[structopt(
         long = "log-level",
-        short = "ll",
+        short = "l",
         env = "JVC_LOGLEVEL",
         default_value = "info",
         global = true
@@ -41,7 +41,7 @@ pub struct VersionRequirements {
     ///
     /// Possible values Azul: x86, arm, mips, ppc, sparcv9
     /// Possible values Adoptopenjdk: x64, x32, ppc64, ppc64le, s390x, aarch64, arm, sparcv9, riscv64
-    /// Default value: try detect based on machine info or
+    /// Default value: try detect based on machine info or x86/x64
     #[structopt(long)]
     pub arch: Option<String>,
 

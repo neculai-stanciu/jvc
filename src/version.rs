@@ -49,7 +49,7 @@ impl Version {
     pub fn as_disk_version(&self) -> String {
         let version_name: &str = self.value.as_ref();
         if self.is_lts() {
-            format!("{}-lts-{}", self.value, self.provider)
+            format!("{}-lts", self.value)
         } else {
             format!("{}", version_name.to_owned())
         }

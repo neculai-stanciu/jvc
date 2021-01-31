@@ -1,0 +1,20 @@
+name: "Build and release jvc"
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+jobs:
+  unit_tests:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macOS-latest, windows-latest]
+    steps:
+    - uses: hecrj/setup-rust-action@v1
+      with:
+        rust-version: stable
+    - uses: actions/checkout@v2
+    - name: Run tests
+      run: cargo test

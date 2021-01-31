@@ -1,10 +1,8 @@
-name: "Build and release jvc"
+name: "Build and upload binaries to release jvc"
 
 on:
-  pull_request:
-  push:
-    branches:
-      - main
+  repository_dispatch:
+    types: [tag-created]
 jobs:
   unit_tests:
     runs-on: ${{ matrix.os }}
@@ -19,9 +17,21 @@ jobs:
     - name: Run tests
       run: cargo test
 
-  build_release:
-    runs-on: windows-latest
-    name: "Release jvc for Windows"
+  release:
+    name: Build and Release jvc
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        include:
+          -os: ubuntu-latest
+          artifact_name: jvc
+          asset_name: jvc-linux-amd64
+          -os: macOS-latest
+          artifact_name: jvc
+          asset_name: jvc-macos-amd64
+          -os: windows-latest
+          artifact_name: jvc.exe
+          asset_name: jvc-win-amd64.exe
     steps:
     - uses: hecrj/setup-rust-action@v1
       with:
@@ -31,74 +41,10 @@ jobs:
     - name: Build release binary
       run: cargo build --release
 
-    - name: Bump version and push tag
-      id: tag_version
-      uses: mathieudutour/github-tag-action@v5.1
-      with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
-          
     - name: Upload binary to release
       uses: svenstaro/upload-release-action@v1-release
       with:
         repo_token: ${{ secrets.GITHUB_TOKEN }}
-        file: target/release/jvc.exe
-        asset_name: jvc-win
-        tag: ${{ steps.tag_version.outputs.new_tag }}
-        overwrite: true
-
-  build_macos_release:
-    runs-on: macOS-latest
-    name: "Release jvc for MacOS"
-    steps:
-    - uses: hecrj/setup-rust-action@v1
-      with:
-        rust-version: stable
-
-    - uses: actions/checkout@v2
-    - name: Build release binary
-      run: cargo build --release
-      env:
-        LZMA_API_STATIC: "true"
-    - name: Strip binary from debug symbols
-      run: strip target/release/jvc
-    - name: List dynamically linked libraries
-      run: otool -L target/release/jvc
-
-    - name: Bump version and push tag
-      id: tag_version
-      uses: mathieudutour/github-tag-action@v5.1
-      with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
-    
-    - name: Upload binary to release
-      uses: svenstaro/upload-release-action@v1-release
-      with:
-        repo_token: ${{ secrets.GITHUB_TOKEN }}
-        file: target/release/jvc
-        asset_name: jvc-macos
-        tag: ${{ steps.tag_version.outputs.new_tag }}
-        overwrite: true
-
-  build_linux_binary:
-    name: "Release jvc for Linux"
-    runs-on: ubuntu-latest
-    steps:
-
-    - uses: actions/checkout@v2
-    - name: Build project
-      run: cargo build --release
-    
-    - name: Bump version and push tag
-      id: tag_version
-      uses: mathieudutour/github-tag-action@v5.1
-      with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
-     
-    - name: Upload binary to release
-      uses: svenstaro/upload-release-action@v1-release
-      with:
-        repo_token: ${{ secrets.GITHUB_TOKEN }}
-        file: target/release/jvc
-        asset_name: jvc-linux
-        tag: ${{ steps.tag_version.outputs.new_tag }}
-        overwrite: true
+        file: target/release/${{ matrix.artifact_name }}
+        asset_name: ${{ matrix.asset_name }}
+        tag: ${{ github.event.client_payload.new_version }}

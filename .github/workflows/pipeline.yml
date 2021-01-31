@@ -41,8 +41,8 @@ jobs:
       uses: svenstaro/upload-release-action@v1-release
       with:
         repo_token: ${{ secrets.GITHUB_TOKEN }}
-        file: target/release/jvc
-        asset_name: jvc-linux-amd64
+        file: target/release/jvc.exe
+        asset_name: jvc-win
         tag: ${{ steps.bump_version.outputs.new_tag }}
         overwrite: true
 
@@ -75,7 +75,7 @@ jobs:
       with:
         repo_token: ${{ secrets.GITHUB_TOKEN }}
         file: target/release/jvc
-        asset_name: jvc-linux-amd64
+        asset_name: jvc-macos
         tag: ${{ steps.bump_version.outputs.new_tag }}
         overwrite: true
 
@@ -99,6 +99,6 @@ jobs:
       with:
         repo_token: ${{ secrets.GITHUB_TOKEN }}
         file: target/release/jvc
-        asset_name: jvc-linux-amd64
+        asset_name: jvc-linux
         tag: ${{ steps.bump_version.outputs.new_tag }}
         overwrite: true

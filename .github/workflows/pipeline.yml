@@ -27,27 +27,43 @@ jobs:
         - os: ubuntu-latest
           artifact_name: jvc
           asset_name: jvc-linux-amd64
-          
+
         - os: macos-latest
           artifact_name: jvc
           asset_name: jvc-macos-amd64
-          
+
         - os: windows-latest
           artifact_name: jvc.exe
           asset_name: jvc-win-amd64.exe
+          artifact_init: jvc-init.exe
+          asset_init: jvc-init.exe
     steps:
     - uses: hecrj/setup-rust-action@v1
       with:
         rust-version: stable
 
     - uses: actions/checkout@v2
-    - name: Build release binary
+    - name: Build release binary unix
+      if: matrix.os != 'windows-latest'
+      run: cargo build --release --bin jvc
+
+    - name: Build release binary windows
+      if: matrix.os == 'windows-latest'
       run: cargo build --release
 
-    - name: Upload binary to release
+    - name: Upload binary to release unix
       uses: svenstaro/upload-release-action@v1-release
       with:
         repo_token: ${{ secrets.GITHUB_TOKEN }}
         file: target/release/${{ matrix.artifact_name }}
         asset_name: ${{ matrix.asset_name }}
+        tag: ${{ github.event.client_payload.new_version }}
+
+    - name: Upload binary to release unix
+      if: matrix.os == 'windows-latest'
+      uses: svenstaro/upload-release-action@v1-release
+      with:
+        repo_token: ${{ secrets.GITHUB_TOKEN }}
+        file: target/release/${{ matrix.artifact_init }}
+        asset_name: ${{ matrix.asset_init }}
         tag: ${{ github.event.client_payload.new_version }}

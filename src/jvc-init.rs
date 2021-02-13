@@ -1,5 +1,3 @@
-#![cfg(windows)]
-
 mod loglevel;
 
 use std::{
@@ -218,6 +216,10 @@ async fn set_persistent_path(value: &str) -> Result<()> {
 
 #[tokio::main(flavor = "current_thread")]
 async fn main() -> Result<()> {
+    if !cfg!(target_os = "windows") {
+        println!("Bin jvc-init is intended only for Windows operating system.");
+        return Ok(());
+    };
     let start_time = Instant::now();
     let args: Cli = Cli::from_args();
     init_logging(&LogLevel::Info);

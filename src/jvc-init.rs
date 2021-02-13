@@ -1,25 +1,36 @@
 mod loglevel;
 
+#[cfg(windows)]
+use anyhow::anyhow;
+#[cfg(windows)]
+use anyhow::Result;
+#[cfg(windows)]
+use indicatif::{HumanDuration, ProgressBar, ProgressStyle};
+#[cfg(windows)]
+use log::{debug, error, info, warn};
+#[cfg(windows)]
+use loglevel::LogLevel;
+#[cfg(windows)]
+use std::io::Write;
+#[cfg(windows)]
 use std::{
     env::temp_dir,
     path::{Path, PathBuf},
     time::Instant,
 };
-
-use anyhow::anyhow;
-use anyhow::Result;
-use indicatif::{HumanDuration, ProgressBar, ProgressStyle};
-use log::{debug, error, info, warn};
-use loglevel::LogLevel;
-use std::io::Write;
+#[cfg(windows)]
 use structopt::StructOpt;
+#[cfg(windows)]
 use tokio::{fs, io::AsyncWriteExt};
+
+#[cfg(windows)]
 use winreg::{
     enums::{RegType, HKEY_CURRENT_USER, KEY_READ, KEY_WRITE},
     RegKey, RegValue,
 };
 
 /// A cli application to handle all java version for windows, linux and macos
+#[cfg(windows)]
 #[derive(Debug, StructOpt)]
 #[structopt(name = "jvc-init")]
 pub struct Cli {
@@ -31,7 +42,7 @@ pub struct Cli {
     #[structopt(long = "install-dir", short = "d")]
     pub install_dir: Option<PathBuf>,
 }
-
+#[cfg(windows)]
 fn init_logging(log_level: &LogLevel) {
     env_logger::Builder::new()
         .format(|buf, record| writeln!(buf, "{}: {}", record.level(), record.args()))
@@ -40,6 +51,7 @@ fn init_logging(log_level: &LogLevel) {
         .init();
 }
 
+#[cfg(windows)]
 async fn install_jvc(release_tag: Option<String>, install_dir: PathBuf) -> Result<()> {
     let filename = "jvc-win-amd64.exe".to_owned();
     let download_url = if let Some(tag) = release_tag {
@@ -69,6 +81,7 @@ async fn install_jvc(release_tag: Option<String>, install_dir: PathBuf) -> Resul
     Ok(())
 }
 
+#[cfg(windows)]
 async fn add_to_path(binary_path: PathBuf) -> Result<()> {
     print!("Add to path not implemented yet! {:?}", binary_path);
     let value = binary_path
@@ -79,6 +92,7 @@ async fn add_to_path(binary_path: PathBuf) -> Result<()> {
     Ok(())
 }
 
+#[cfg(windows)]
 async fn move_to_install_dir(from: PathBuf, install_dir: &Path) -> Result<u64> {
     info!(
         "Try to copy from {:?} to {:?}",
@@ -89,6 +103,7 @@ async fn move_to_install_dir(from: PathBuf, install_dir: &Path) -> Result<u64> {
         .map_err(|e| anyhow!("Cannot copy binary to installation dir \n {:?}", e))
 }
 
+#[cfg(windows)]
 async fn download_binary(
     download_url: &str,
     download_path: &Path,
@@ -168,6 +183,7 @@ pub fn string_from_winreg_value(val: &winreg::RegValue) -> Option<String> {
 // Get the windows PATH variable out of the registry as a String. If
 // this returns None then the PATH variable is not unicode and we
 // should not mess with it.
+#[cfg(windows)]
 fn get_windows_path_var() -> Result<Option<String>> {
     use std::io;
     let root = RegKey::predef(HKEY_CURRENT_USER);
@@ -189,6 +205,7 @@ fn get_windows_path_var() -> Result<Option<String>> {
     }
 }
 
+#[cfg(windows)]
 async fn set_persistent_path(value: &str) -> Result<()> {
     println!("Extend path with value: {}", value);
     let root = RegKey::predef(HKEY_CURRENT_USER);
@@ -214,12 +231,9 @@ async fn set_persistent_path(value: &str) -> Result<()> {
     Ok(())
 }
 
+#[cfg(windows)]
 #[tokio::main(flavor = "current_thread")]
 async fn main() -> Result<()> {
-    if !cfg!(target_os = "windows") {
-        println!("Bin jvc-init is intended only for Windows operating system.");
-        return Ok(());
-    };
     let start_time = Instant::now();
     let args: Cli = Cli::from_args();
     init_logging(&LogLevel::Info);
@@ -236,4 +250,9 @@ async fn main() -> Result<()> {
     let end = start_time.elapsed();
     debug!("Time elapsed is: {}", HumanDuration(end));
     Ok(())
+}
+
+#[cfg(unix)]
+fn main() {
+    println!("Bin jvc-init is intended only for Windows operating system.");
 }

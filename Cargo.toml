@@ -1,6 +1,6 @@
 [package]
 name = "jvc"
-version = "0.1.13"
+version = "0.1.14"
 authors = ["Stanciu Neculai <neculai.stanciu@outlook.com>"]
 edition = "2018"
 description = "A simple tool that help with java versions."
@@ -8,6 +8,12 @@ license = "MIT"
 repository= "https://github.com/neculai-stanciu/jvc"
 keywords = ["jvc", "java", "versions", "adoptopenjdk", "zulu"]
 categories = ["command-line-utilities"]
+readme = "README.md"
+exclude = [
+    ".ci",
+    ".github",
+    "target"
+]
 
 [[bin]]
 name = "jvc"

@@ -7,4 +7,18 @@ A tool to handle java versions.
 
 ## Installation
 
+### Using cargo
+
+> For linux it is necessary to install **openssl-sys** first.
+> To install on Ubuntu:
+>
+> - **`sudo apt update && sudo apt install libssl-dev`**
+> - **`sudo apt update && sudo apt install pkg-config`**
+
+Install jvc using cargo install:
+
+```bash
+cargo install jvc
+```
+
 ## Supported shells

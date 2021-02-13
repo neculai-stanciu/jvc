@@ -1,6 +1,6 @@
 [package]
 name = "jvc"
-version = "0.1.14"
+version = "0.1.16"
 authors = ["Stanciu Neculai <neculai.stanciu@outlook.com>"]
 edition = "2018"
 description = "A simple tool that help with java versions."

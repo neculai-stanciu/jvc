@@ -77,7 +77,7 @@ fn init_logging(log_level: &LogLevel) {
         .init();
 }
 
-#[tokio::main]
+#[tokio::main(flavor = "current_thread")]
 async fn main() -> Result<()> {
     let start_time = Instant::now();
 

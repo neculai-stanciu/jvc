@@ -216,7 +216,7 @@ async fn set_persistent_path(value: &str) -> Result<()> {
     Ok(())
 }
 
-#[tokio::main]
+#[tokio::main(flavor = "current_thread")]
 async fn main() -> Result<()> {
     let start_time = Instant::now();
     let args: Cli = Cli::from_args();

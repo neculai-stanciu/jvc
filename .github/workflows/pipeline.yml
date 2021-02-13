@@ -1,4 +1,4 @@
-name: "Build and upload binaries to release jvc"
+name: release-jvc
 
 on:
   repository_dispatch:

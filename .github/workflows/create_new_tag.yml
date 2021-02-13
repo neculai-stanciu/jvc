@@ -1,4 +1,4 @@
-name: Bump version, create new tag and release point
+name: create-tag
 
 on:
   push:

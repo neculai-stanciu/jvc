@@ -74,6 +74,9 @@ impl Executor for Setup {
         let shell_path_as_str = shell_path
             .to_str()
             .ok_or(anyhow!("Cannot set shell path."))?;
+
+        debug!("Create a JVC_SHELL_PATH {}", shell_path_as_str);
+
         let base_dir = config.get_base_dir_or_default();
         let jvc_dir_as_str = base_dir
             .to_str()

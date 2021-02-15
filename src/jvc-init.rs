@@ -83,7 +83,6 @@ async fn install_jvc(release_tag: Option<String>, install_dir: PathBuf) -> Resul
 
 #[cfg(windows)]
 async fn add_to_path(binary_path: PathBuf) -> Result<()> {
-    print!("Add to path not implemented yet! {:?}", binary_path);
     let value = binary_path
         .as_os_str()
         .to_str()
@@ -94,7 +93,7 @@ async fn add_to_path(binary_path: PathBuf) -> Result<()> {
 
 #[cfg(windows)]
 async fn move_to_install_dir(from: PathBuf, install_dir: &Path) -> Result<u64> {
-    info!(
+    debug!(
         "Try to copy from {:?} to {:?}",
         from.as_path().as_os_str(),
         install_dir.as_os_str()
@@ -113,7 +112,7 @@ async fn download_binary(
 
     let file_name = download_path.join(binary_name);
     let mut response = reqwest::get(download_url).await?;
-    info!(
+    debug!(
         "Try to write in temp dir: {} - response status {}",
         file_name.to_str().expect("cannot get dir path"),
         &response.status()
@@ -207,7 +206,7 @@ fn get_windows_path_var() -> Result<Option<String>> {
 
 #[cfg(windows)]
 async fn set_persistent_path(value: &str) -> Result<()> {
-    println!("Extend path with value: {}", value);
+    debug!("Extend path with value: {}", value);
     let root = RegKey::predef(HKEY_CURRENT_USER);
     let current_path_value = get_windows_path_var()?;
 
@@ -227,6 +226,9 @@ async fn set_persistent_path(value: &str) -> Result<()> {
         };
         environment.set_raw_value("PATH", &reg_value)?;
     }
+    info!(
+        "jvc installed successfully, please close all your terminal windows to refresh env paths"
+    );
 
     Ok(())
 }

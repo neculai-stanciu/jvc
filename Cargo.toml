@@ -1,6 +1,6 @@
 [package]
 name = "jvc"
-version = "0.1.17"
+version = "0.1.18"
 authors = ["Stanciu Neculai <neculai.stanciu@outlook.com>"]
 edition = "2018"
 description = "A simple tool that help with java versions."
@@ -81,3 +81,10 @@ lto = true
 # Reduce build time by setting proc-macro crates non optimized.
 [profile.release.build-override]
 opt-level = 0
+
+
+[dev-dependencies.cargo-husky]
+# read more here: https://github.com/rhysd/cargo-husky
+version = "1"
+default-features = false # Disable features which are enabled by default
+features = ["precommit-hook", "run-cargo-test", "run-cargo-clippy"]
